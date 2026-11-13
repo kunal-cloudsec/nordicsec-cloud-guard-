@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nordicsec-sre-enforcer
+  namespace: eu-north-prod
+  labels:
+    tier: reliability-control-plane
+    compliance: iso-27001
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nordicsec-sre
+  template:
+    metadata:
+      labels:
+        app: nordicsec-sre
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: policy-auditor
+          image: python:3.11-slim
+          command: ["python3", "/opt/engine/compliance_auditor.py"]
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+              
