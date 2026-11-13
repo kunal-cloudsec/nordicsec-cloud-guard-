@@ -1,0 +1,17 @@
+{
+  "project": "Dreams-Nordic-Cloud-Architecture",
+  "target_regions": [
+    "Denmark",
+    "Sweden",
+    "Norway",
+    "Finland",
+    "Iceland",
+    "Zurich"
+  ],
+  "compliance": "Production-Ready-2027",
+  "stack": {
+    "infrastructure": "Terraform",
+    "containerization": "Docker",
+    "automation": "GitHub Actions"
+  }
+}
