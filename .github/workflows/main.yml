@@ -1,0 +1,29 @@
+name: SRE Compliance Gate
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  sre-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify SRE Repository Baseline
+        run: |
+          chmod +x scripts/verify_baseline.sh
+          ./scripts/verify_baseline.sh
+
+      - name: Execute ISO-27001 Static Audit
+        run: python3 engine/compliance_auditor.py
+
+      - name: Build Hardened Non-Root Container
+        run: docker build -f docker/Dockerfile -t nordicsec-sre:ci .
+        
